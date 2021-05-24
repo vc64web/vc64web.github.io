@@ -803,6 +803,19 @@ function keydown(e) {
     {
         if(action_button.key == e.key)
         {
+            if(e.repeat)
+            {
+              //if a key is being pressed for a long enough time, it starts to auto-repeat: 
+              //the keydown triggers again and again, and then when it’s released we finally get keyup
+              //we just have to ignore the autorepeats here
+              return;
+            }
+            let running_script=get_running_script(action_button.id);                    
+            if(running_script.running == false)
+            {
+                running_script.action_button_released = false;
+            }
+            execute_script(action_button.id, action_button.lang, action_button.script);
             return;
         }
     }
@@ -816,11 +829,19 @@ function keydown(e) {
             return;
         }
     }
-    var c64code = translateKey(e.code, e.key);
+
+    if(use_symbolic_map && e.code.toLowerCase().startsWith("shift"))
+    {
+        return;
+    }
+    var c64code = translateKey2(e.code, e.key, !use_symbolic_map);
     if(c64code !== undefined)
     {
-        //wasm_key(c64code[0], c64code[1], 1);
-        wasm_schedule_key(c64code[0], c64code[1], 1,0);
+        if(c64code.modifier != null)
+        {
+            wasm_schedule_key(c64code.modifier[0], c64code.modifier[1], 1, 0);
+        }
+        wasm_schedule_key(c64code.raw_key[0], c64code.raw_key[1], 1, 0);
     }
 }
 
@@ -834,7 +855,7 @@ function keyup(e) {
     {
         if(action_button.key == e.key)
         {
-            execute_script(action_button.id, action_button.lang, action_button.script);
+            get_running_script(action_button.id).action_button_released = true;
             return;
         }
     }
@@ -849,11 +870,18 @@ function keyup(e) {
         }
     }
 
-    var c64code = translateKey(e.code, e.key);
-    if(c64code !== undefined)
+    if(use_symbolic_map && e.code.toLowerCase().startsWith("shift"))
     {
-        //wasm_key(c64code[0], c64code[1], 0);
-        wasm_schedule_key(c64code[0], c64code[1], 0,1);
+        return;
+    }
+    var c64code = translateKey2(e.code, e.key, !use_symbolic_map);
+    if(c64code !== undefined )
+    {
+        wasm_schedule_key(c64code.raw_key[0], c64code.raw_key[1], 0, 1);
+        if(c64code.modifier != null)
+        {
+            wasm_schedule_key(c64code.modifier[0], c64code.modifier[1], 0, 1);
+        }
     }
 }
 
@@ -1187,6 +1215,7 @@ function InitWrappers() {
 
     wasm_peek = Module.cwrap('wasm_peek', 'number', ['number']);
     wasm_poke = Module.cwrap('wasm_poke', 'undefined', ['number', 'number']);
+    wasm_export_disk = Module.cwrap('wasm_export_disk', 'string');
 
 
     get_audio_context=function() {
@@ -1402,6 +1431,25 @@ function InitWrappers() {
     }});
 
 
+
+//----
+    symbolic_mapping_switch = $('#symbolic_mapping_switch');
+    use_symbolic_map=load_setting('use_symbolic_map', true);
+    symbolic_mapping_switch.prop('checked', use_symbolic_map);
+    symbolic_mapping_switch.change( function() {
+        use_symbolic_map=this.checked;
+        save_setting('use_symbolic_map', use_symbolic_map);
+    });
+
+//----
+    lock_action_button_switch = $('#lock_action_button_switch');
+    lock_action_button=load_setting('lock_action_button', false);
+    lock_action_button_switch.prop('checked', lock_action_button);
+    lock_action_button_switch.change( function() {
+        lock_action_button=this.checked;
+        install_custom_keys();
+        save_setting('lock_action_button', lock_action_button);
+    });
 
 //----
     webgl_switch = $('#webgl_switch');
@@ -1644,7 +1692,10 @@ $('.layer').change( function(event) {
                 }
             );
 
-            if(do_auto_load)
+            if(call_param_dialog_on_disk == false)
+            {//loading is probably done by scripting
+            }
+            else if(do_auto_load)
             {
                 if(file_slot_file_name.endsWith('.tap'))
                 {
@@ -1761,11 +1812,46 @@ $('.layer').change( function(event) {
         $("#modal_take_snapshot").modal('show');
         $("#input_app_title").val(global_apptitle);
         $("#input_app_title").focus();
+
+        let d64_json = wasm_export_disk();
+        let d64_obj = JSON.parse(d64_json);
+
+        if(d64_obj.size>0)
+        {
+            $("#button_export_disk").show();
+        }
+        else
+        {
+            $("#button_export_disk").hide();
+        }
     }
+    $('#button_export_disk').click(function() 
+    {
+        let d64_json = wasm_export_disk();
+        let d64_obj = JSON.parse(d64_json);
+        let d64_buffer = new Uint8Array(Module.HEAPU8.buffer, d64_obj.address, d64_obj.size);
+        let filebuffer = d64_buffer.slice(0,d64_obj.size);
+        let blob_data = new Blob([filebuffer], {type: 'application/octet-binary'});
+        const url = window.URL.createObjectURL(blob_data);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+
+        let app_name = $("#input_app_title").val();
+        let extension_pos = app_name.indexOf(".");
+        if(extension_pos >=0)
+        {
+            app_name = app_name.substring(0,extension_pos);
+        }
+        a.download = app_name+'.d64';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    });
 
     $('#button_save_snapshot').click(function() 
     {       
-        var app_name = $("#input_app_title").val();
+        let app_name = $("#input_app_title").val();
         wasm_take_user_snapshot();
         var snapshot_json= wasm_pull_user_snapshot_file();
         var snap_obj = JSON.parse(snapshot_json);
@@ -2103,6 +2189,15 @@ $('.layer').change( function(event) {
 
         $('#modal_custom_key').on('show.bs.modal', function () {
 
+            $('#choose_padding a').click(function () 
+            {
+                 $('#button_padding').text('size = '+ $(this).text() ); 
+            });
+            $('#choose_opacity a').click(function () 
+            {
+                 $('#button_opacity').text('opacity = '+ $(this).text() ); 
+            });
+
             function set_script_language(script_language) {
                 $("#button_script_language").text(script_language);;
             }
@@ -2128,6 +2223,11 @@ $('.layer').change( function(event) {
                 set_script_language(btn_def.lang);
                 $('#input_button_text').val(btn_def.title);
                 $('#input_button_shortcut').val(btn_def.key);
+                let padding = btn_def.padding == undefined ? 'default':btn_def.padding ;
+                $('#button_padding').text('size = '+ padding );
+                let opacity = btn_def.opacity == undefined ? 'default':btn_def.opacity ;
+                $('#button_opacity').text('opacity = '+ opacity);
+                
                 $('#check_app_scope').prop('checked',btn_def.app_scope);
                 $('#input_action_script').val(btn_def.script);
 
@@ -2167,35 +2267,18 @@ $('.layer').change( function(event) {
             //click function
             var on_add_action = function() {
                 var txt= $(this).text();
-/*
-                var action_script_val = $('#input_action_script').val();
-                if(action_script_val.trim().length==0)
-                {
-                    action_script_val = txt;
-                }
-                else if(action_script_val.trim().endsWith('{') || txt == '}')
-                {
-                    action_script_val += txt;
-                }
-                else
-                {
-                    action_script_val += "=>"+txt;
-                }
-                editor.getDoc().setValue(action_script_val);
-*/
+
                 let doc = editor.getDoc();
                 let cursor = doc.getCursor();
                 doc.replaceRange(txt, cursor);
                 editor.focus();
-                //$('#input_action_script').val(action_script_val);
                 validate_action_script();
-
             };
 
             $('#predefined_actions').collapse('hide');
 
             //Special Keys action
-            var list_actions=['Space','Comma','F1','F3','F5','F8','runStop','restore','commodore', 'Delete','Enter','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'];
+            var list_actions=['Space','Comma','F1','F3','F5','F8','runStop','restore','commodore', 'Delete','Enter','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','ShiftLeft', 'ControlLeft'];
             var html_action_list='';
             list_actions.forEach(element => {
                 html_action_list +='<a class="dropdown-item" href="#">'+element+'</a>';
@@ -2223,7 +2306,7 @@ $('.layer').change( function(event) {
             $('#add_joystick2_action a').click(on_add_action);
 
             //timer action
-            var list_actions=['100ms','300ms','1000ms', 'loop2{','loop3{','loop6{', '}'];
+            var list_actions=['100ms','300ms','1000ms', 'loop2{','loop3{','loop6{', '}','await_action_button_released'];
             html_action_list='';
             list_actions.forEach(element => {
                 html_action_list +='<a class="dropdown-item" href="#">'+element+'</a>';
@@ -2241,7 +2324,7 @@ $('.layer').change( function(event) {
             $('#add_system_action a').click(on_add_action);
 
             //script action
-            var list_actions=['simple while', 'peek & poke', 'API example', 'aimbot'];
+            var list_actions=['simple while', 'peek & poke', 'API example', 'aimbot', 'keyboard combos'];
             html_action_list='';
             list_actions.forEach(element => {
                 html_action_list +='<a class="dropdown-item" href="#">'+element+'</a>';
@@ -2271,7 +2354,15 @@ wasm_poke(0xD020, orig_color);`;
                             action_script_val = '//example of the API\nwhile(not_stopped(this_id))\n{\n  //wait some time\n  await action("100ms");\n\n  //get information about the sprites 0..7\n  var y_light=sprite_ypos(0);\n  var y_dark=sprite_ypos(0);\n\n  //reserve exclusive port 1..2 access (manual joystick control is blocked)\n  set_port_owner(1,PORT_ACCESSOR.BOT);\n  await action(`j1left1=>j1up1=>400ms=>j1left0=>j1up0`);\n  //give control back to the user\n  set_port_owner(1,PORT_ACCESSOR.MANUAL);\n}';
                         else if(txt=='aimbot')
                             action_script_val = '//archon aimbot\nconst port_light=1, port_dark=2, sprite_light=0, sprite_dark=1;\n\nwhile(not_stopped(this_id))\n{\n  await aim_and_shoot( port_light /* change bot side here ;-) */ );\n  await action("100ms");\n}\n\nasync function aim_and_shoot(port)\n{ \n  var y_light=sprite_ypos(sprite_light);\n  var y_dark=sprite_ypos(sprite_dark);\n  var x_light=sprite_xpos(sprite_light);\n  var x_dark=sprite_xpos(sprite_dark);\n\n  var y_diff=Math.abs(y_light - y_dark);\n  var x_diff=Math.abs(x_light - x_dark);\n  var angle = shoot_angle(x_diff,y_diff);\n\n  var x_aim=null;\n  var y_aim=null;\n  if( y_diff<10 || 26<angle && angle<28 )\n  {\n     var x_rel = (port == port_dark) ? x_dark-x_light: x_light-x_dark;  \n     x_aim=x_rel > 0 ?"left":"right";   \n  }\n  if( x_diff <10 || 26<angle && angle<28)\n  {\n     var y_rel = (port == port_dark) ? y_dark-y_light: y_light-y_dark;  \n     y_aim=y_rel > 0 ?"up":"down";   \n  }\n  \n  if(x_aim != null || y_aim != null)\n  {\n    set_port_owner(port, \n      PORT_ACCESSOR.BOT);\n    await action(`j${port}left0=>j${port}up0`);\n\n    await action(`j${port}fire1`);\n    if(x_aim != null)\n     await action(`j${port}${x_aim}1`);\n    if(y_aim != null)\n      await action(`j${port}${y_aim}1`);\n    await action("60ms");\n    if(x_aim != null)\n      await action(`j${port}${x_aim}0`);\n    if(y_aim != null)\n      await action(`j${port}${y_aim}0`);\n    await action(`j${port}fire0`);\n    await action("60ms");\n\n    set_port_owner(\n      port,\n      PORT_ACCESSOR.MANUAL\n    );\n    await action("500ms");\n  }\n}\n\nfunction shoot_angle(x, y) {\n  return Math.atan2(y, x) * 180 / Math.PI;\n}';
-                       set_script_language('javascript');
+                        else if(txt=='keyboard combos')
+                            action_script_val =
+`//example for key combinations
+//here CTRL+1 which gives a black cursor
+press_key('ControlLeft');
+press_key('1');
+release_key('1');
+release_key('ControlLeft');`;
+                        set_script_language('javascript');
                     }
                     else
                     {
@@ -2429,18 +2520,31 @@ wasm_poke(0xD020, orig_color);`;
             if( (await validate_custom_key_form()) == false)
                 return;
 
+            let padding = $('#button_padding').text().split("=")[1].trim();
+            let opacity = $('#button_opacity').text().split("=")[1].trim();
             if(create_new_custom_key)
             {
                 //create a new custom key buttom  
-                custom_keys.push( 
-                    {  id: custom_keys.length
+                let new_button={  id: custom_keys.length
                       ,title: $('#input_button_text').val()
                       ,key: $('#input_button_shortcut').val()
                       ,app_scope: $('#check_app_scope').prop('checked')
                       ,script:  $('#input_action_script').val()
                       ,position: "top:50%;left:50%"
                       ,lang: $('#button_script_language').text()
-                    });
+                    };
+                if(padding != 'default')
+                {
+                    new_button.padding=padding;
+                }
+                if(opacity != 'default')
+                {
+                    new_button.opacity=opacity;
+                }
+                custom_keys.push(new_button);
+
+                $('#lock_action_button_switch').prop('checked', false);
+                lock_action_button=false;
 
                 install_custom_keys();
                 create_new_custom_key=false;
@@ -2453,7 +2557,16 @@ wasm_poke(0xD020, orig_color);`;
                 btn_def.app_scope = $('#check_app_scope').prop('checked');
                 btn_def.script = $('#input_action_script').val();
                 btn_def.lang = $('#button_script_language').text();
-
+                btn_def.padding=padding;
+                if(padding == 'default')
+                {
+                    delete btn_def.padding;    
+                }
+                btn_def.opacity=opacity;
+                if(opacity == 'default')
+                {
+                    delete btn_def.opacity;    
+                }
                 install_custom_keys();
             }
             $('#modal_custom_key').modal('hide');
@@ -2463,10 +2576,8 @@ wasm_poke(0xD020, orig_color);`;
         $('#button_delete_custom_button').click(function(e) 
         {
             let id_to_delete =haptic_touch_selected.id.substring(2);
-            if(map_of_running_scripts[id_to_delete] == true)
-            {
-                map_of_running_scripts_stop_request[id_to_delete]=true;
-            }
+
+            get_running_script(id_to_delete).stop_request=true;
 
             custom_keys =custom_keys.filter(el=> +el.id != id_to_delete);            
             install_custom_keys();
@@ -2525,7 +2636,14 @@ wasm_poke(0xD020, orig_color);`;
             {
                 btn_html += 'border-width:3px;border-color: #99999999;';
             }
-
+            if(element.padding != undefined && element.padding != 'default')
+            {
+                btn_html += 'padding:'+element.padding+'em;';
+            }
+            if(element.opacity != undefined && element.opacity != 'default')
+            {
+                btn_html += 'opacity:'+element.opacity+' !important;';
+            }
 
 
             btn_html += 'touch-action:none">'+element.title+'</button>';
@@ -2533,20 +2651,51 @@ wasm_poke(0xD020, orig_color);`;
             $('#div_canvas').append(btn_html);
             action_scripts["ck"+element.id] = element.script;
 
+            if(lock_action_button == true)
+            {//when action buttons locked
+             //process the mouse/touch events immediatly, there is no need to guess the gesture
+                let action_function = function(e) 
+                {   
+                    e.preventDefault();
+                    var action_script = action_scripts['ck'+element.id];
 
-            $('#ck'+element.id).click(function() 
-            {       
-                //at the end of a drag ignore the click
-                if(just_dragged)
-                    return;
+                    let running_script=get_running_script(element.id);                    
+                    if(running_script.running == false)
+                    {
+                      running_script.action_button_released = false;
+                    }
+                    execute_script(element.id, element.lang, action_script);
 
-                var action_script = action_scripts['ck'+element.id];
-                execute_script(element.id, element.lang, action_script);
-            });
+                };
+                let mark_as_released = function(e) 
+                {
+                    get_running_script(element.id).action_button_released = true;
+                };
+
+                $('#ck'+element.id).mousedown(action_function).on({'touchstart' : action_function});
+                $('#ck'+element.id).mouseup(mark_as_released).on({'touchend' : mark_as_released});
+            }
+            else
+            {
+                $('#ck'+element.id).click(function() 
+                {       
+                    //at the end of a drag ignore the click
+                    if(just_dragged)
+                        return;
+    
+                    var action_script = action_scripts['ck'+element.id];
+                    get_running_script(element.id).action_button_released = true;
+                    execute_script(element.id, element.lang, action_script);
+                });
+            }
+
+
         });
 
-        install_drag();
-
+        if(lock_action_button==false)
+        {
+            install_drag();
+        }
         for(b of call_param_buttons)
         {   //start automatic run actions built from a call param
             if(b.run)
@@ -2556,7 +2705,8 @@ wasm_poke(0xD020, orig_color);`;
                     execute_script(b.id, b.lang, b.script);
                     b.auto_started = true;
                 }
-                if(map_of_running_scripts[b.id])
+
+                if(get_running_script(b.id).running)
                 {//if it still runs  
                     $('#ck'+b.id).css("background-color", "var(--red)");
                 }

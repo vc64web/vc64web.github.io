@@ -3,17 +3,33 @@ const sleep = (milliseconds) => {
 }
 
 var map_of_running_scripts = [];
-var map_of_running_scripts_stop_request = [];
+function get_running_script(id)
+{
+    let running_script=map_of_running_scripts[id];
+    if(running_script == null)
+    {
+        running_script = {
+            id: id,
+            running: false,
+            stop_request: false,
+            action_button_released: false
+         };
+        map_of_running_scripts[id]=running_script;
+    }
+    return running_script;
+}
+
 var execute_script = function(id, script_lang, action_script) {    
-    if(map_of_running_scripts[id] == true)
+    let running_script=get_running_script(id);
+    if(running_script.running)
     {
         //alert("action script with "+id+" is still running, double execution is prevented... requesting stop");
-        map_of_running_scripts_stop_request[id]=true;
+        running_script.stop_request=true;
     }
     else
     {
-        map_of_running_scripts[id]=true;
-        map_of_running_scripts_stop_request[id]=false;
+        running_script.running=true;
+        running_script.stop_request=false;
 
         setTimeout(async function() { 
             let button_element=$('#ck'+id);
@@ -28,8 +44,10 @@ var execute_script = function(id, script_lang, action_script) {
                   button_element=$('#ck'+id); //then get the new dom element
               }
               button_element.css("background-color", "");
-              map_of_running_scripts[id]=false;
-              map_of_running_scripts_stop_request[id]=false;
+              
+              let running_script=get_running_script(id);
+              running_script.running = false;
+              running_script.stop_request=false;
             }
         });
     }
@@ -46,16 +64,14 @@ function stop_all_scripts()
             continue;
         }
 
-        if(map_of_running_scripts[id]==true)
-        {
-            map_of_running_scripts_stop_request[id]=true;
-        }
+        let running_script=get_running_script(id);
+        running_script.stop_request=true;
     }
 }
 
 function not_stopped(id)
 {
-    return id<0 ? true : map_of_running_scripts_stop_request[id] != true;
+    return id<0 ? true : get_running_script(id).stop_request == false;
 }
 
 async function parse_script(script_lang, action_script, execute = false, execution_id = -1) {
@@ -139,7 +155,7 @@ async function execute_action_sequence_script(action_script, execute=false, exec
                 }
             }
         }
-        else if(await execute_single_action(cmd, execute)==true)
+        else if(await execute_single_action(cmd, execute, execution_id)==true)
         {            
         }
         else
@@ -164,7 +180,7 @@ async function execute_action_sequence_script(action_script, execute=false, exec
 }
 
 
-async function execute_single_action(cmd, execute=true)
+async function execute_single_action(cmd, execute=true, execution_id=-1)
 {
     cmd=cmd.trim();
     var valid = true;
@@ -261,11 +277,40 @@ async function execute_single_action(cmd, execute=true)
             execute_joystick_script(joy_cmd_tokens);
         }
     }
-    else if(translateKey2(cmd,cmd.toLowerCase()).raw_key !== undefined)
+    else if(translateKey2(cmd,cmd) !== undefined)
     {
         if(execute)
         {            
             emit_string([cmd],0,100); 
+        }
+    }
+    else if(
+        cmd.startsWith("press")
+        &&
+        translateKey2(cmd.replace("press",""),cmd.replace("press","")) !== undefined        
+    )
+    {
+        if(execute)
+        {            
+            press_key(cmd.replace("press","")); 
+        }
+    }
+    else if(
+        cmd.startsWith("release")
+        &&
+        translateKey2(cmd.replace("release",""),cmd.replace("release","")) !== undefined        
+    )
+    {
+        if(execute)
+        {            
+            release_key(cmd.replace("release","")); 
+        }
+    }
+    else if(cmd == "await_action_button_released")
+    {
+        if(execute)
+        { 
+            await action_button_released(execution_id);
         }
     }
     else
@@ -602,11 +647,45 @@ function wasm_runstop_restore()
     wasm_schedule_key(7, 7, 0, 6); //release runstop
 }
 
+
+function press_key(key)
+{
+    let c64code=translateKey2(key, key);
+    if(c64code !== undefined )
+    {
+        wasm_schedule_key(c64code.raw_key[0], c64code.raw_key[1], 1, 1);
+        if(c64code.modifier != null)
+        {
+            wasm_schedule_key(c64code.modifier[0], c64code.modifier[1], 1, 1);
+        }
+    }
+}
+function release_key(key)
+{
+    let c64code=translateKey2(key, key);
+    if(c64code !== undefined )
+    {
+        wasm_schedule_key(c64code.raw_key[0], c64code.raw_key[1], 0, 1);
+        if(c64code.modifier != null)
+        {
+            wasm_schedule_key(c64code.modifier[0], c64code.modifier[1], 0, 1);
+        }
+    }
+}
+
 async function wasm_ready_after_reset()
 {
     let mega_roms=JSON.parse(wasm_rom_info()).kernal.startsWith("mega");
     //mega roms is ready after 500000 cycles, original C= Rom is ready after 2700000 cycles
     while(wasm_get_cpu_cycles()<(mega_roms?500000:2700000)) 
+    {
+        await sleep(50);
+    }    
+}
+
+async function action_button_released(id)
+{
+    while(!get_running_script(id).action_button_released) 
     {
         await sleep(50);
     }    
