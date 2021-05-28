@@ -32,6 +32,7 @@ example how to embed a c64 prg into an existing html page
 style="width:60vw" src="doc/images/wolfling.gif" 
 ontouchstart="touched=true"
 onclick="
+vc64web_player.vc64web_url='';  //the emulator files are in the same folder as the run.html
 let touch=(typeof touched!='undefined')?touched:false;touched=false;
 let config={
     touch:touch,
