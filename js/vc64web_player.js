@@ -206,7 +206,7 @@ ${this.overlay_on_icon}
                     vc64web_player.scale_overlay();
                 }
                 $vc64web.height($vc64web.width() * 212/320);
-            }, 2);
+            }, 20);
             
         });
 
@@ -214,7 +214,7 @@ ${this.overlay_on_icon}
             setTimeout(()=>{
                 vc64web_player.preview_pic_width = $('#player_container').parent().width();
                 $('#player_container').css("width",vc64web_player.preview_pic_width);
-            }, 1);
+            }, 10);
         });
 
         document.addEventListener("click", this.grab_focus);
