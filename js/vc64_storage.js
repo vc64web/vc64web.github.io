@@ -57,7 +57,7 @@ async function initDB() {
       }
 
   };
-  openReq.onerror = function() { console.error("Error", openReq.error);}
+  openReq.onerror = function() { console.error("Error", openReq.error); alert('error while open db: '+openReq.error);}
   openReq.onsuccess = function() {
       _db=openReq.result;
   }  
