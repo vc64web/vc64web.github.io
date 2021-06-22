@@ -24,6 +24,11 @@ function isUpperCase(s){
 function translateKey2(keycode, key, use_positional_mapping=false)
 {
     console.log('keycode='+keycode + ', key='+key);
+    if(keycode == 'Space' && key == '^')
+    {//fix for windows system
+        key=' ';
+    }
+
     let mapindex;
     let raw_key_with_modifier = { modifier: null,  raw_key: undefined }
 
