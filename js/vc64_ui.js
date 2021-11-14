@@ -1421,45 +1421,49 @@ function InitWrappers() {
     }
 
 
-
-
-
-
 //---
-    audio_thread_switch = $('#cb_audio_thread_switch');
-    use_audio_thread=load_setting('cb_audio_thread_switch', false);
-    audio_thread_switch.prop('checked', use_audio_thread);
-
-
-    config_audio_thread = function (use_audio_thread)
+    config_audio_thread = async function (audio_device)
     {
-        if(use_audio_thread)
+        //close current device
+        Module._wasm_close_main_thread_audio();     
+
+        if(typeof worklet_node !== 'undefined')
         {
-            Module._wasm_close_main_thread_audio();     
-            
+            audio_connected=false;
+            worklet_node.port.postMessage(null);
+            worklet_node.disconnect();
+            document.removeEventListener('click', connect_audio_processor, false);                
+            document.removeEventListener('click', connect_audio_processor_stereo, false);
+        }
+
+        if(audio_device == 'main thread (mono)')
+        {
+            Module._wasm_open_main_thread_audio();
+        }
+        else if(audio_device == 'separate thread (mono)')
+        {
+            connect_audio_processor();
+            document.addEventListener('click',connect_audio_processor, false);
+        }
+        else if(audio_device == 'separate thread (stereo)')
+        {
             connect_audio_processor_stereo();
             document.addEventListener('click',connect_audio_processor_stereo, false);
         }
-        else
-        {
-            if(typeof worklet_node !== 'undefined')
-            {
-                audio_connected=false;
-                worklet_node.port.postMessage(null);
-                worklet_node.disconnect();
-                document.removeEventListener('click', connect_audio_processor_stereo, false);                
-            }
-            Module._wasm_open_main_thread_audio();
-        }
     }
 
-    audio_thread_switch.change( function() {
-        use_audio_thread=this.checked;
-        config_audio_thread(use_audio_thread);
-    //    save_setting('cb_audio_thread_switch', use_audio_thread);
+    set_audio_device = function (audio_device) {
+        $("#button_audio_device").text("render audio in "+audio_device);
+        config_audio_thread(audio_device);
+    }
+    $('#choose_audio_device a').click(function () 
+    {
+        let audio_device=$(this).text();
+        set_audio_device(audio_device);
+        save_setting('audio_device',audio_device)
+        $("#modal_settings").focus();
     });
-
-    config_audio_thread(use_audio_thread);
+    set_audio_device(load_setting('audio_device', 'main thread (mono)'));
 
 
 //----

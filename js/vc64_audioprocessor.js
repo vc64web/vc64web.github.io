@@ -91,7 +91,7 @@ class vc64AudioProcessor extends AudioWorkletProcessor {
     this.no_data=0;
 */
     this.counter_no_buffer=0;
-    console.log("vAmiga_audioprocessor connected");
+    console.log("vc64_audioprocessor mono connected");
   }
 
   handleMessage(event) {
