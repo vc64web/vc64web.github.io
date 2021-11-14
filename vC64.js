@@ -9842,6 +9842,9 @@ var _wasm_get_sound_buffer_address = Module["_wasm_get_sound_buffer_address"] = 
 var _wasm_copy_into_sound_buffer = Module["_wasm_copy_into_sound_buffer"] = createExportWrapper("wasm_copy_into_sound_buffer");
 
 /** @type {function(...*):?} */
+var _wasm_copy_into_sound_buffer_stereo = Module["_wasm_copy_into_sound_buffer_stereo"] = createExportWrapper("wasm_copy_into_sound_buffer_stereo");
+
+/** @type {function(...*):?} */
 var _wasm_set_warp = Module["_wasm_set_warp"] = createExportWrapper("wasm_set_warp");
 
 /** @type {function(...*):?} */
