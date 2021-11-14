@@ -1308,10 +1308,10 @@ function InitWrappers() {
         });
         
         let sound_buffer_address = wasm_get_sound_buffer_address();
-        soundbuffer_slots=[];
+        soundbuffer_slots_mono=[];
         for(slot=0;slot<12;slot++)
         {
-            soundbuffer_slots.push(
+            soundbuffer_slots_mono.push(
                 new Float32Array(Module.HEAPF32.buffer, sound_buffer_address+(slot*1024)*4, 1024));
         }
 
@@ -1342,7 +1342,7 @@ function InitWrappers() {
                       return;
                     }
                 }
-                shuttle.set(soundbuffer_slots[slot++]);
+                shuttle.set(soundbuffer_slots_mono[slot++]);
                 worklet_node.port.postMessage(shuttle, [shuttle.buffer]);
                 shuttle=null;
                 samples-=1024;
@@ -1374,10 +1374,10 @@ function InitWrappers() {
         });
 
         let sound_buffer_address = wasm_get_sound_buffer_address();
-        soundbuffer_slots=[];
+        soundbuffer_slots_stereo=[];
         for(slot=0;slot<12;slot++)
         {
-            soundbuffer_slots.push(
+            soundbuffer_slots_stereo.push(
                 new Float32Array(Module.HEAPF32.buffer, sound_buffer_address+(slot*2048)*4, 2048));
         }
 
@@ -1408,7 +1408,7 @@ function InitWrappers() {
                       return;
                     }
                 }
-                shuttle.set(soundbuffer_slots[slot++]);
+                shuttle.set(soundbuffer_slots_stereo[slot++]);
                 worklet_node.port.postMessage(shuttle, [shuttle.buffer]);
                 shuttle=null;
                 samples-=1024;
