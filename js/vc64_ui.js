@@ -1367,7 +1367,7 @@ function InitWrappers() {
         wasm_set_sample_rate(audioContext.sampleRate);
         console.log("try connecting audioprocessor");           
         await audioContext.audioWorklet.addModule('js/vc64_audioprocessor_stereo.js');
-        worklet_node = new AudioWorkletNode(audioContext, 'vc64_audioprocessor_stereo', {
+        worklet_node_stereo = new AudioWorkletNode(audioContext, 'vc64_audioprocessor_stereo', {
             outputChannelCount: [2],
             numberOfInputs: 0,
             numberOfOutputs: 1
@@ -1382,7 +1382,7 @@ function InitWrappers() {
         }
 
         empty_shuttles_stereo=new RingBuffer(16);
-        worklet_node.port.onmessage = (msg) => {
+        worklet_node_stereo.port.onmessage = (msg) => {
             //direct c function calls with preceeding Module._ are faster than cwrap
             let samples=Module._wasm_copy_into_sound_buffer_stereo();
             let shuttle = msg.data;
@@ -1409,15 +1409,15 @@ function InitWrappers() {
                     }
                 }
                 shuttle.set(soundbuffer_slots_stereo[slot++]);
-                worklet_node.port.postMessage(shuttle, [shuttle.buffer]);
+                worklet_node_stereo.port.postMessage(shuttle, [shuttle.buffer]);
                 shuttle=null;
                 samples-=1024;
             }            
         };
-        worklet_node.port.onmessageerror = (msg) => {
+        worklet_node_stereo.port.onmessageerror = (msg) => {
             console.log("audio processor error:"+msg);
         };
-        worklet_node.connect(audioContext.destination);        
+        worklet_node_stereo.connect(audioContext.destination);        
     }
 
 
@@ -1433,8 +1433,15 @@ function InitWrappers() {
             worklet_node.port.postMessage(null);
             worklet_node.disconnect();
             document.removeEventListener('click', connect_audio_processor, false);                
+        }
+
+        if(typeof worklet_node_stereo !== 'undefined')
+        {
+            worklet_node_stereo.port.postMessage(null);
+            worklet_node_stereo.disconnect();
             document.removeEventListener('click', connect_audio_processor_stereo, false);
         }
+        audio_connected=false;
 
         if(audio_device == 'main thread (mono)')
         {
