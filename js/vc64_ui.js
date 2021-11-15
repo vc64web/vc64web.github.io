@@ -1381,7 +1381,7 @@ function InitWrappers() {
                 new Float32Array(Module.HEAPF32.buffer, sound_buffer_address+(slot*2048)*4, 2048));
         }
 
-        empty_shuttles=new RingBuffer(16);
+        empty_shuttles_stereo=new RingBuffer(16);
         worklet_node.port.onmessage = (msg) => {
             //direct c function calls with preceeding Module._ are faster than cwrap
             let samples=Module._wasm_copy_into_sound_buffer_stereo();
@@ -1390,7 +1390,7 @@ function InitWrappers() {
             {
                 if(shuttle!="empty")
                 {
-                    empty_shuttles.write(shuttle);
+                    empty_shuttles_stereo.write(shuttle);
                 }
                 return;
             }
@@ -1399,9 +1399,9 @@ function InitWrappers() {
             {
                 if(shuttle == null || shuttle=="empty")
                 {
-                    if(!empty_shuttles.isEmpty())
+                    if(!empty_shuttles_stereo.isEmpty())
                     {
-                        shuttle = empty_shuttles.read();
+                        shuttle = empty_shuttles_stereo.read();
                     }
                     else
                     {
