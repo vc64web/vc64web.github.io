@@ -19,25 +19,107 @@
 		.emulator_view {
 			width: 100%;
 		}
+		#vc64web{
+			border-radius: 10px;
+		}
 
 		#player_container {
-			background-color: white;
+			background-color: gray;
+			border-radius: 10px;
+		}
+		#player_container div:last-child {
+			margin-left: 5px;
+			margin-right: 5px;
 		}
 
 		.player_icon_btn {
 			background-color: transparent;
-			color: black;
+			color: #eeeeee;
 			margin-right: 15px;
 			cursor: grab;
 		}
+		[player="on"] .style1 {
+			background-color: #555555;
+			color: black;
+			animation: go_dark 2s ease-out;
+		}
+		[player="off"] .style1 {
+			animation: go_light 1s ease-in;
+		}
+		[player="on"] a {
+			color: darkgrey;
+			animation: a_go_dark 2s ease-out;
+		}
+		[player="off"] a {
+			animation: a_go_light 1s ease-in;
+		}
+		@keyframes a_go_dark {
+			0% {
+				color: #448DBC;
+			}
+			100% {
+				color: darkgrey;
+			}
+		} 
+		@keyframes a_go_light {
+			0% {
+				color: darkgrey;
+			}
+			100% {
+				color: #448DBC;
+			}
+		}
+		@keyframes go_dark {
+			0% {
+				background-color: #ffffff;
+				color: #474747;
+			}
+			100% {
+				background-color: #555555;
+				color: black;
+			}
+		} 
+		@keyframes go_light {
+			0% {
+				background-color: #555555;
+				color: black;
+			}
+			100% {
+				background-color: #ffffff;
+				color: #474747;
+			}
+			
+		} 
 	</style>
 	<!--script src="https://vc64web.github.io/js/vc64web_player.js"></script-->
 	<script src="../js/vc64web_player.js"></script>
+	<script>
+		function switch_cinema_display(){
+			var observer= new MutationObserver(function(mutations){
+				let player_on=false;
+				for(var mutation of mutations)
+				{
+					for(var node of mutation.addedNodes)
+					{
+						if(node.id=="player_container")
+						{
+							player_on=true;
+							break;
+						}
+					};	
+				}
+				document.body.setAttribute("player",player_on?"on":"off");
+			});
+			var emulator_views=document.querySelectorAll(".emulator_view");
+			for(emulator_view of emulator_views)
+				observer.observe(emulator_view, { childList:true});
+		}
+	</script>
 
 	<!-- web emulator view stuff end-->
 </head>
 
-<body class="is-preload">
+<body class="is-preload" onload="switch_cinema_display()">
 	<div id="page-wrapper">
 
 		<!-- Header -->
@@ -354,7 +436,7 @@
 							<section>
 								<div id="emuview0" class="emulator_view"><a href="#"
 										ontouchstart="touch_param='#touch=true';"
-										onclick="let extra_param=''; if(typeof touch_param != 'undefined'){extra_param=touch_param;touch_param='';} vc64web_player.load(this, extra_param+'#dark=false#openROMS=true#navbar=hidden#wide=true#border=false#port2=true', 'http://csdb.dk/getinternalfile.php/92366/VVVVVV.prg');return false;">
+										onclick="let extra_param=''; if(typeof touch_param != 'undefined'){extra_param=touch_param;touch_param='';} vc64web_player.load(this, extra_param+'#openROMS=true#navbar=hidden#wide=true#border=false#port2=true', 'http://csdb.dk/getinternalfile.php/92366/VVVVVV.prg');return false;">
 										<img src="images/vvvvvv.png" width="100%">
 									</a>
 								</div>
@@ -401,7 +483,7 @@
 								<section>
 									<div id="emuview0" class="emulator_view"><a href="#"
 											ontouchstart="touched=true"
-											onclick="let touch=(typeof touched!='undefined')?touched:false;touched=false;let config={touch:touch,openROMS:true,dark:false,navbar:false,wide:true,border:0.3,port2:true,buttons:[{position:'bottom:0vh;left:0vw',title:'[s]ave',key:'s',script:`action('take_snapshot');`},{position:'bottom:0vh;right:0vw',title:'[l]oad',key:'l',script:`action('restore_last_snapshot');`}],url:'http://vc64web.github.io/doc/media/wolfling14.prg'}; vc64web_player.load(this,encodeURIComponent(JSON.stringify(config)));return false;">
+											onclick="let touch=(typeof touched!='undefined')?touched:false;touched=false;let config={touch:touch,openROMS:true,navbar:false,wide:true,border:0.3,port2:true,buttons:[{position:'bottom:0vh;left:0vw',title:'[s]ave',key:'s',script:`action('take_snapshot');`},{position:'bottom:0vh;right:0vw',title:'[l]oad',key:'l',script:`action('restore_last_snapshot');`}],url:'http://vc64web.github.io/doc/media/wolfling14.prg'}; vc64web_player.load(this,encodeURIComponent(JSON.stringify(config)));return false;">
 											<img src="images/wolfling.gif" width="100%">
 										</a>
 									</div>
@@ -445,7 +527,7 @@
 							<section>
 								<div id="emuview0" class="emulator_view"><a href="#"
 										ontouchstart="touched=true"
-										onclick="let touch=(typeof touched!='undefined')?touched:false;touched=false;let config={touch:touch,openROMS:true,dark:false,navbar:false,wide:true,border:false,port2:true,buttons:[{run:true,script:`await action('4000ms');$('#alert_wait').show();await action('11000ms');$('#alert_wait').hide();`},{position:'bottom:0vh;right:0vw',title:'[w]eapon',key:'w',script:`action('Space')`}],url:'http://csdb.dk/getinternalfile.php/162224/moonspire - the draxx war preview.crt'}; vc64web_player.load(this,encodeURIComponent(JSON.stringify(config)));return false;">
+										onclick="let touch=(typeof touched!='undefined')?touched:false;touched=false;let config={touch:touch,openROMS:true,navbar:false,wide:true,border:false,port2:true,buttons:[{run:true,script:`await action('4000ms');$('#alert_wait').show();await action('11000ms');$('#alert_wait').hide();`},{position:'bottom:0vh;right:0vw',title:'[w]eapon',key:'w',script:`action('Space')`}],url:'http://csdb.dk/getinternalfile.php/162224/moonspire - the draxx war preview.crt'}; vc64web_player.load(this,encodeURIComponent(JSON.stringify(config)));return false;">
 										<img src="images/moonspire2.png" width="100%">
 									</a>
 								</div>
@@ -492,7 +574,7 @@
 							<!-- Column 2 -->
 							<section>
 								<div id="emuview1" class="emulator_view"><a href="#"
-										onclick="vc64web_player.load(this, '#dark=false#openROMS=true#navbar=hidden#wide=true#border=false', 'http://vc64web.github.io/doc/media/advland.prg');return false;">
+										onclick="vc64web_player.load(this, '#openROMS=true#navbar=hidden#wide=true#border=false', 'http://vc64web.github.io/doc/media/advland.prg');return false;">
 										<img src="images/advland.png" width="100%">
 									</a>
 								</div>
@@ -525,7 +607,7 @@
 									<!-- Column 2 -->
 									<section>
 										<div id="emuview3" class="emulator_view"><a href="#"
-												onclick="vc64web_player.load(this, '#dark=false#openROMS=true#2ndSID=d420#navbar=hidden#wide=true#border=false', 'http://csdb.dk/getinternalfile.php/206403/to_norah.prg');return false;">
+												onclick="vc64web_player.load(this, '#openROMS=true#2ndSID=d420#navbar=hidden#wide=true#border=false', 'http://csdb.dk/getinternalfile.php/206403/to_norah.prg');return false;">
 												<img src="images/nora.jpg" width="100%"></a>
 										</div>
 									</section>
@@ -568,7 +650,7 @@
 									<!-- Column 2 -->
 									<section>
 										<div id="emuview3" class="emulator_view"><a href="#"
-												onclick="vc64web_player.load(this, '#dark=false#openROMS=true#navbar=hidden#wide=true#border=false', 'http://vc64web.github.io/doc/media/demos.zip');return false;">
+												onclick="vc64web_player.load(this, '#openROMS=true#navbar=hidden#wide=true#border=false', 'http://vc64web.github.io/doc/media/demos.zip');return false;">
 												<img src="images/aluminium.png" width="100%"></a>
 										</div>
 									</section>
