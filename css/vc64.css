@@ -332,6 +332,7 @@ button[id^="detail_run"] {
 .dropdown-item:focus, 
 .dropdown-item:hover {
     background-color: var(--blue);
+    color: var(--light);
 }
 
 
