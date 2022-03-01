@@ -319,8 +319,6 @@ button[id^="detail_run"] {
     color: var(--light);
 }
 
-
-
 [data-theme="dark"] .dropdown-menu.show {
     background-color: #444444;
 }
@@ -334,7 +332,6 @@ button[id^="detail_run"] {
     background-color: var(--blue);
     color: var(--light);
 }
-
 
 @font-face {
     font-family:"C64Pro";
