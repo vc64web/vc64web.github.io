@@ -62,6 +62,35 @@
 								<header>
 									<h2>News</h2>
 								</header>
+
+								<h3><em>16.05.2022 &nbsp;</em>virtual keyboard update</h3>
+								<p style="margin-bottom:0px">
+the <b>virtual keyboard</b> forwards now the <b>exact duration of a key press</b> to the C64 <i>(before duration was a fixed value of 100ms)</i> 
+... thanks to this games which rely on <b>long</b> keyboard presses like flight simulation "FighterPilot" do work now using solely the virtual keyboard
+... the duration of the key press is animated with a nice background <b>white LED glow effect</b>
+<br><br>
+technically spoken the virtual keyboard has been freed from default gestures which were often conflicting (e.g. text selection, drag and drop, context menu popup gesture) 
+<br><br>
+on <b>touch screens</b> the virtual keyboard has got the following three different touch implementations which can be selected in the settings dialog.
+<div style="margin-left:10px;margin-top:5px;font-style:italic">
+<b>exact timing</b>
+autorepeat and simultaneous keycap presses (disables default scroll gestures on keycaps, scroll gesture possible only on gaps around the keys) 
+<br>
+
+<b>smartphone like</b>
+native scroll gestures on keycaps (press starts after finger is lifted from keycap for a duration of 100ms) 
+<br>
+
+<b>mix of both</b>
+ tries to mix both worlds... i.e. exact timing and simultaneous presses but also scrolls keyboard when swiping the finger on keycaps. disadvantage: also does a keypress when only scrolling was intended 
+</div>
+
+								</p>
+
+
+
+
+
 								<h3><em>07.04.2022 &nbsp;</em>vc64web can now share its snapshots</h3>
 								<p>
 									in snapshot gallery you can now export individual snapshots by clicking the export button in the right bottom corner and transfer them to another device. E.g. start to play on iPhone and continue the game on a desktop computer. Or you could send them to a friend ...
