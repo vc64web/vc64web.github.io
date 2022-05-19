@@ -317,7 +317,7 @@ function installKeyboard() {
     ];
     var the_keyBoard='';
     keymap.forEach(row => {
-        the_keyBoard+='<div class="justify-content-center" style="display:flex">';
+        the_keyBoard+='<div class="justify-content-center" style="display:flex;user-select:none">';
         row.forEach(keydef => {
             if(keydef.k === undefined)
             {
