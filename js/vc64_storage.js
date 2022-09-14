@@ -79,7 +79,7 @@ function initDB() {
       }
 
   };
-  openReq.onerror = function() { console.error("Error", openReq.error); alert('error while open db: '+openReq.error);}
+  openReq.onerror = function() { console.error("Error", openReq.error); /*alert('error while open db: '+openReq.error);*/}
   openReq.onsuccess = function() {
       _db=openReq.result;
   }  
@@ -352,47 +352,53 @@ async function get_custom_buttons_app_scope(the_app_title, callback_fn)
 {
 //  if(_db === undefined)
 //    return;
+  try
+  {
+    let transaction = (await db()).transaction("custom_buttons"); 
+    let custom_buttons = transaction.objectStore("custom_buttons");
 
-  let transaction = (await db()).transaction("custom_buttons"); 
-  let custom_buttons = transaction.objectStore("custom_buttons");
+    let request = custom_buttons.get(the_app_title);
 
-  let request = custom_buttons.get(the_app_title);
-
-  request.onsuccess = function() {
-      if(request.result !== undefined)
-      {
-        for(button_id in request.result.data)
+    request.onsuccess = function() {
+        if(request.result !== undefined)
         {
-          var action_button = request.result.data[button_id];
-          if(action_button.app_scope === undefined)
+          for(button_id in request.result.data)
           {
-            action_button.app_scope= true;
-          }
-          if(action_button.lang === undefined)
-          {
-            //migration of js: prefix to lang property, can be removed in a later version ... 
-            if(action_button.script.startsWith("js:"))
+            var action_button = request.result.data[button_id];
+            if(action_button.app_scope === undefined)
             {
-              action_button.script = action_button.script.substring(3);
-              action_button.lang = "javascript";
+              action_button.app_scope= true;
             }
-            else
+            if(action_button.lang === undefined)
             {
-              action_button.lang = "actionscript";
+              //migration of js: prefix to lang property, can be removed in a later version ... 
+              if(action_button.script.startsWith("js:"))
+              {
+                action_button.script = action_button.script.substring(3);
+                action_button.lang = "javascript";
+              }
+              else
+              {
+                action_button.lang = "actionscript";
+              }
             }
           }
+
+          callback_fn(request.result);
         }
+        else
+        {
+          let empty_custom_buttons = {
+              title: the_app_title,
+              data: [] 
+            };
 
-        callback_fn(request.result);
-      }
-      else
-      {
-        let empty_custom_buttons = {
-            title: the_app_title,
-            data: [] 
-          };
-
-        callback_fn(empty_custom_buttons);
-      }
-  };
+          callback_fn(empty_custom_buttons);
+        }
+    };
+  }
+  catch(e)
+  {
+    console.error(e.message);
+  }
 }
