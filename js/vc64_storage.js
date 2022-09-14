@@ -197,8 +197,38 @@ function delete_snapshot_per_id(the_id)
 
 //--- local storage API ---
 
+
+function local_storage_get(name) {
+  try{
+    return localStorage.getItem(name);
+  } 
+  catch(e) {
+    console.error(e.message);
+    return null;
+  }  
+}
+function local_storage_set(name, value) {
+  try{
+    localStorage.setItem(name,value);
+  } 
+  catch(e) {
+    console.error(e.message);
+  }  
+}
+function local_storage_remove(name) {
+  try{
+    localStorage.removeItem(name);
+  } 
+  catch(e) {
+    console.error(e.message);
+  }  
+}
+
+
+
+
 function load_setting(name, default_value) {
-    var value = localStorage.getItem(name);
+    var value = local_storage_get(name);
     if(value === null)
     {
         return default_value;
@@ -216,9 +246,9 @@ function load_setting(name, default_value) {
 
 function save_setting(name, value) {
     if (value!= null) {
-      localStorage.setItem(name, value);
+      local_storage_set(name, value);
     } else {
-      localStorage.removeItem(name);
+      local_storage_remove(name);
     }
 }
 
