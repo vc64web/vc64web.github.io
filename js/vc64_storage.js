@@ -34,7 +34,7 @@ async function db(){
       _db_wait_counter+=wait_time;
     }
     
-    if(_db_wait_counter > 900)
+    if(_db_wait_counter > 1500)
     {//if opening db takes too long, retry
         _db_init_called = false;
         _db_wait_counter=0;
@@ -80,7 +80,11 @@ function initDB() {
       }
 
   };
-  openReq.onerror = function() { console.error("Error", openReq.error); /*alert('error while open db: '+openReq.error);*/}
+  openReq.onerror = function() { 
+    console.error("Error", openReq.error);
+    _db_wait_counter=1600; //flag this wait as unsuccessful 
+    /*alert('error while open db: '+openReq.error);*/
+  }
   openReq.onsuccess = function() {
       _db=openReq.result;
   }  
