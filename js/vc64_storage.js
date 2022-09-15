@@ -400,5 +400,10 @@ async function get_custom_buttons_app_scope(the_app_title, callback_fn)
   catch(e)
   {
     console.error(e.message);
+    let empty_custom_buttons = {
+              title: the_app_title,
+              data: [] 
+            };
+    callback_fn(empty_custom_buttons);
   }
 }
