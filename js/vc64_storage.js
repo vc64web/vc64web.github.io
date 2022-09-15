@@ -16,10 +16,11 @@ async function db(){
       _db_init_called=true;
       me_called_init=true;
 
-      if(_db_retries>3)
+      if(_db_retries>2)
       {
         let msg=`cannot open database... tried ${_db_retries} times`;
         _db_retries=0;
+        _db_init_called=false;
         throw new Error(msg);
       }
       console.error(`opening db ... ${_db_retries+1}.try`);
@@ -33,7 +34,7 @@ async function db(){
       _db_wait_counter+=wait_time;
     }
     
-    if(_db_wait_counter > 1500)
+    if(_db_wait_counter > 900)
     {//if opening db takes too long, retry
         _db_init_called = false;
         _db_wait_counter=0;
