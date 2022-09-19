@@ -50,8 +50,8 @@ let play_sound = function(audio_buffer){
             parallel_playing--;
         });
         source.connect(gain_node);
-        parallel_playing++;
         source.start();
+        parallel_playing++;
 }   
 
 let audio_df_insert=null;
