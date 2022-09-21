@@ -16,7 +16,7 @@ let virtual_keyboard_clipping = true; //keyboard scrolls when it clips
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 let audio_connected=false;
-let current_audio_device='main thread (mono)';
+let current_audio_device='separate thread (mono)';
 
 
 
@@ -1519,6 +1519,10 @@ function InitWrappers() {
         if(audio_device == 'main thread (mono)')
         {
             Module._wasm_open_main_thread_audio();
+            if(audioContext.state === 'suspended') {
+                //for floppy drive sounds
+                await audioContext.resume();  
+            }
         }
         else if(audio_device == 'separate thread (mono)')
         {
@@ -1544,7 +1548,7 @@ function InitWrappers() {
         save_setting('audio_device',audio_device)
         $("#modal_settings").focus();
     });
-    set_audio_device(load_setting('audio_device', 'main thread (mono)'));
+    set_audio_device(load_setting('audio_device', 'separate thread (mono)'));
 
 
 //----
