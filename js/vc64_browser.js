@@ -389,7 +389,7 @@ var collectors = {
                 }
                 await get_stored_app_titles(store_renderer);
             }
-            finally
+            catch(e)
             {
                 get_data_collector('snapshots').set_busy(false);
             }
