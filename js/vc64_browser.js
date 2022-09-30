@@ -391,6 +391,7 @@ var collectors = {
             }
             catch(e)
             {
+                console.error(`cannot read app titles...${e.message}`);
                 get_data_collector('snapshots').set_busy(false);
             }
         },
