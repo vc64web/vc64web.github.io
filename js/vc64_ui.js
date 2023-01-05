@@ -1547,6 +1547,46 @@ function InitWrappers() {
         current_audio_device=audio_device;
     }
 
+    audioContext.onstatechange = () => {
+        let state = audioContext.state;
+        console.error(`audioContext.state=${state}`);
+        if(state==='suspended'){
+            //in case we did go suspended reinstall the unlock events
+            document.removeEventListener('click',unlock_WebAudio);
+            document.addEventListener('click',unlock_WebAudio, false);
+
+            //iOS safari does not bubble click events on canvas so we add this extra event handler here
+            let canvas=document.getElementById('canvas');
+            canvas.removeEventListener('touchstart',unlock_WebAudio);
+            canvas.addEventListener('touchstart',unlock_WebAudio,false);        
+        }
+        else if(state === 'running') {
+            //if it runs we dont need the unlock handlers, has no effect when handler already removed 
+            document.removeEventListener('click',unlock_WebAudio);
+            document.getElementById('canvas').removeEventListener('touchstart',unlock_WebAudio);
+        }
+    }
+    unlock_WebAudio=async function() {
+        try { 
+            if(current_audio_device == 'main thread (mono)')
+            {
+                Module._wasm_open_main_thread_audio();
+                if(audioContext.state === 'suspended') {
+                    //for floppy drive sounds
+                    await audioContext.resume();  
+                }
+            }
+            else if(current_audio_device == 'separate thread (mono)')
+            {
+                await connect_audio_processor();
+            }
+            else if(current_audio_device == 'separate thread (stereo)')
+            {
+                await connect_audio_processor_stereo();
+            }
+        } catch(e){ console.error(e);}
+    }
+
     set_audio_device = function (audio_device) {
         $("#button_audio_device").text("render audio in "+audio_device);
         config_audio_thread(audio_device);
