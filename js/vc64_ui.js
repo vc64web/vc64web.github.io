@@ -2248,7 +2248,7 @@ $('.layer').change( function(event) {
         {
             $("#button_run").click();
         }
-        $("#modal_reset").modal('hide');
+        $("#modal_reset").modal('hide').blur();
     }
 //---
     running=true;
@@ -2345,7 +2345,6 @@ $('.layer').change( function(event) {
                 {
                     //shift + runStop
                     emit_string(['Enter','shiftrunstop']);
-                    
                     //emit_string(['Enter','ShiftRunStop']);
                     
                     if(do_auto_press_play)
