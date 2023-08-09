@@ -2939,6 +2939,7 @@ $('.layer').change( function(event) {
                 $('#input_action_script').val('');
                 if(typeof(editor) !== 'undefined') editor.getDoc().setValue("");
                 $('#button_reset_position').removeClass("active");
+                button_delete_shortcut.removeClass("active");
             }
             else
             {
@@ -2952,8 +2953,7 @@ $('.layer').change( function(event) {
                 set_script_language(btn_def.lang);
                 $('#input_button_text').val(btn_def.title);
                 $('#input_button_shortcut').val(btn_def.key);
-                if(btn_def.key != "")
-                    button_delete_shortcut.addClass("active");
+                
                 let padding = btn_def.padding == undefined ? 'default':btn_def.padding ;
                 $('#button_padding').text('size = '+ padding );
                 let opacity = btn_def.opacity == undefined ? 'default':btn_def.opacity ;
@@ -2964,6 +2964,11 @@ $('.layer').change( function(event) {
                 if(typeof(editor) !== 'undefined') editor.getDoc().setValue(btn_def.script);
 
                 $('#button_delete_custom_button').show();
+
+                if(btn_def.key == "")
+                    button_delete_shortcut.removeClass("active");
+                else
+                    button_delete_shortcut.addClass("active");
 
                 //show errors
                 validate_action_script();
