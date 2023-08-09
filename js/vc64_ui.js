@@ -2927,12 +2927,7 @@ $('.layer').change( function(event) {
                 haptic_touch_selected= {id: 'ck'+btn_def.id};
             }
             bind_custom_key();
-
-//            editor.getDoc().setValue(btn_def.script);
-            //$('#input_action_script').val(action_script_val);
-            //editor.focus();
- //           validate_action_script();
-
+            validate_custom_key();
           });
             if(create_new_custom_key)
             {
@@ -2943,10 +2938,16 @@ $('.layer').change( function(event) {
 
                 $('#input_action_script').val('');
                 if(typeof(editor) !== 'undefined') editor.getDoc().setValue("");
+                $('#button_reset_position').removeClass("active");
             }
             else
             {
                 var btn_def = custom_keys.find(el=> ('ck'+el.id) == haptic_touch_selected.id);
+
+                if(btn_def.currentX==0 && btn_def.currentY==0)
+                    $('#button_reset_position').removeClass("active");
+                else
+                    $('#button_reset_position').addClass("active");
 
                 set_script_language(btn_def.lang);
                 $('#input_button_text').val(btn_def.title);
@@ -3236,6 +3237,21 @@ release_key('ControlLeft');`;
 
         $('#input_button_text').keyup( function () {validate_custom_key(); return true;} );
         $('#input_action_script').keyup( function () {validate_action_script(); return true;} );
+
+
+        $('#button_reset_position').click(function(e) 
+        {
+            var btn_def = custom_keys.find(el=> ('ck'+el.id) == haptic_touch_selected.id);
+            if(btn_def != null)
+            {
+                btn_def.currentX=0;
+                btn_def.currentY=0;
+                btn_def.position= "top:50%;left:50%";
+                install_custom_keys();
+                $('#button_reset_position').removeClass("active");
+                save_custom_buttons(global_apptitle, custom_keys);
+            }
+        });
 
         $('#button_save_custom_button').click(async function(e) 
         {
