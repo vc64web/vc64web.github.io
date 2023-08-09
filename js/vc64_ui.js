@@ -96,6 +96,11 @@ function FromBase64(str) {
     return atob(str).split('').map(function (c) { return c.charCodeAt(0); });
 }
 
+function html_encode(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#39;').replace(/"/g, '&#34;');
+}
+
+
 function get_parameter_link()
 {
     let parameter_link=null;
@@ -2894,14 +2899,13 @@ $('.layer').change( function(event) {
                 editor.focus();
             });
 
-
             let otherButtons="";
             if(!create_new_custom_key){
                 otherButtons+=`<a class="dropdown-item" href="#">&lt;new&gt;</a>`;
             }
             for(let otherBtn of custom_keys)
             {
-                otherButtons+=`<a class="dropdown-item" href="#">${otherBtn.title}</a>`;
+                otherButtons+=`<a class="dropdown-item" href="#">${html_encode(otherBtn.title)}</a>`;
             }
             
 
@@ -3390,7 +3394,7 @@ release_key('ControlLeft');`;
             }
 
 
-            btn_html += 'touch-action:none">'+element.title+'</button>';
+            btn_html += 'touch-action:none">'+html_encode(element.title)+'</button>';
 
             $('#div_canvas').append(btn_html);
             action_scripts["ck"+element.id] = element.script;
