@@ -1012,9 +1012,11 @@ function keyup(e) {
 
     e.preventDefault();
 
+    let serialized_code=serialize_key_code(e);
     for(action_button of custom_keys)
     {
-        if(action_button.key == e.key)
+        if(action_button.key == e.key /* e.key only for legacy custom keys*/   
+           || action_button.key == serialized_code)
         {
             get_running_script(action_button.id).action_button_released = true;
             return;
