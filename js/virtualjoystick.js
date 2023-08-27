@@ -207,13 +207,16 @@ VirtualJoystick.prototype._onMove	= function(x, y)
 			} 		
 
 			//vc64web patch start let the base move too, when innercircle collides with outercircle 
-			var base_radius = this._baseEl.width /2;
-			if(stickDistance >= base_radius/2){
-				this._baseX	= this._stickX - ((this._stickX - this._baseX)/stickDistance)*base_radius/2; 
-				this._baseY	= this._stickY - ((this._stickY - this._baseY)/stickDistance)*base_radius/2;
-				this._baseEl.style.display	= "";
-				this._move(this._baseEl.style, (this._baseX - base_radius), (this._baseY - base_radius));	
-			} 
+			if(!fixed_touch_joystick_base)
+			{
+				var base_radius = this._baseEl.width /2;
+				if(stickDistance >= base_radius/2){
+					this._baseX	= this._stickX - ((this._stickX - this._baseX)/stickDistance)*base_radius/2; 
+					this._baseY	= this._stickY - ((this._stickY - this._baseY)/stickDistance)*base_radius/2;
+					this._baseEl.style.display	= "";
+					this._move(this._baseEl.style, (this._baseX - base_radius), (this._baseY - base_radius));	
+				}
+			}
 			//vc64web patch end
 		}
 		

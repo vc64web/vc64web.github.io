@@ -1928,6 +1928,15 @@ function InitWrappers() {
         install_custom_keys();
         save_setting('lock_action_button', lock_action_button);
     });
+//----
+
+    fixed_touch_joystick_base_switch = $('#fixed_touch_joystick_base_switch');
+    fixed_touch_joystick_base=load_setting('fixed_touch_joystick_base', false);
+    fixed_touch_joystick_base_switch.prop('checked', fixed_touch_joystick_base);
+    fixed_touch_joystick_base_switch.change( function() {
+        fixed_touch_joystick_base=this.checked;
+        save_setting('fixed_touch_joystick_base', fixed_touch_joystick_base);
+    });
 
 //---
 
