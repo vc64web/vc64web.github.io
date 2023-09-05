@@ -1640,11 +1640,17 @@ function InitWrappers() {
     //when app is going to background
     window.addEventListener('blur', ()=>{
         Module._wasm_keyboard_reset();
+        //reset touch on virtual joystick
+        if(v_joystick !==null) v_joystick._touchIdx=null;
+        if(v_fire !==null) v_fire._touchIdx=null;
     });
 
     //when app is coming to foreground again
     window.addEventListener('focus', async ()=>{ 
         Module._wasm_keyboard_reset();
+        //reset touch on virtual joystick
+        if(v_joystick !==null) v_joystick._touchIdx=null;
+        if(v_fire !==null) v_fire._touchIdx=null;
     });
     
 
