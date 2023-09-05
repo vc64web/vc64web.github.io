@@ -329,8 +329,8 @@ VirtualJoystick.prototype._onTouchMove	= function(event)
 VirtualJoystick.prototype._buildJoystickBase	= function()
 {
 	var canvas	= document.createElement( 'canvas' );
-	canvas.width	= 130;
-	canvas.height	= 130;
+	canvas.width	= 135;
+	canvas.height	= 135;
 	this._drawJoystickBase(canvas);	
 	return canvas;
 }
@@ -343,22 +343,22 @@ VirtualJoystick.prototype._drawJoystickBase	= function(canvas)
 		ctx.beginPath();
 		ctx.strokeStyle="rgba(80, 80, 80, 0.5)";
 		ctx.lineWidth	= 26; 
-		ctx.arc(130/2, 130/2, 52, 0, 2*Math.PI);
+		ctx.arc(135/2, 135/2, 55, 0, 2*Math.PI);
 		ctx.stroke();
 		
 		ctx.globalCompositeOperation = "destination-out";
 		ctx.lineWidth	= 1; 
 		let path = new Path2D();
 		path.moveTo(5,0);
-		path.lineTo(130,130-5);
-		path.lineTo(130-5,130);
+		path.lineTo(135,135-5);
+		path.lineTo(135-5,135);
 		path.lineTo(0,5);
 		path.lineTo(5,0);
-		path.moveTo(130-5,0);
-		path.lineTo(0,130-5);
-		path.lineTo(5,130);
-		path.lineTo(130,5);
-		path.lineTo(130-55,0);
+		path.moveTo(135-5,0);
+		path.lineTo(0,135-5);
+		path.lineTo(5,135);
+		path.lineTo(135,5);
+		path.lineTo(135-55,0);
 		
 		ctx.fillStyle="rgba(0, 0, 0, 1.0)";
 		ctx.fill(path);	
@@ -369,7 +369,7 @@ VirtualJoystick.prototype._drawJoystickBase	= function(canvas)
 		ctx.beginPath();
 		ctx.strokeStyle="rgba(255, 0, 0, 0.25)";
 		ctx.lineWidth	= 26; 
-		ctx.arc(130/2, 130/2, 48, 0, 2*Math.PI);
+		ctx.arc(135/2, 135/2, 48, 0, 2*Math.PI);
 		ctx.stroke();
 	}
 }
@@ -443,7 +443,7 @@ VirtualJoystick.prototype._buildJoystickStick	= function()
 		ctx.beginPath(); 
 		ctx.strokeStyle	= "rgba(180,180,180,0.2)"//this._strokeStyle; 
 		ctx.lineWidth	= 10; 
-		ctx.arc( canvas.width/2, canvas.width/2, 32, 0, Math.PI*2, true); 
+		ctx.arc( canvas.width/2, canvas.width/2, 34, 0, Math.PI*2, true); 
 		ctx.stroke();
 	}
 	else
