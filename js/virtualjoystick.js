@@ -102,38 +102,38 @@ VirtualJoystick.touchScreenAvailable	= function()
 
 VirtualJoystick.prototype.deltaX	= function(){ return this._stickX - this._baseX;	}
 VirtualJoystick.prototype.deltaY	= function(){ return this._stickY - this._baseY;	}
-
+rest_zone=20;
 VirtualJoystick.prototype.up	= function(){
 	if( this._pressed === false )	return false;
-	var deltaX	= this.deltaX();
+	//var deltaX	= this.deltaX();
 	var deltaY	= this.deltaY();
 	if( deltaY >= 0 )				return false;
-	if( Math.abs(deltaX) > 2*Math.abs(deltaY) )	return false;
-	return true;
+	//if( Math.abs(deltaX) > 2*Math.abs(deltaY) )	return false;
+	return Math.abs(deltaY)>rest_zone;
 }
 VirtualJoystick.prototype.down	= function(){
 	if( this._pressed === false )	return false;
-	var deltaX	= this.deltaX();
+	//var deltaX	= this.deltaX();
 	var deltaY	= this.deltaY();
 	if( deltaY <= 0 )				return false;
-	if( Math.abs(deltaX) > 2*Math.abs(deltaY) )	return false;
-	return true;	
+	//if( Math.abs(deltaX) > 2*Math.abs(deltaY) )	return false;
+	return Math.abs(deltaY)>rest_zone;
 }
 VirtualJoystick.prototype.right	= function(){
 	if( this._pressed === false )	return false;
 	var deltaX	= this.deltaX();
-	var deltaY	= this.deltaY();
+	//var deltaY	= this.deltaY();
 	if( deltaX <= 0 )				return false;
-	if( Math.abs(deltaY) > 2*Math.abs(deltaX) )	return false;
-	return true;	
+	//if( Math.abs(deltaY) > 2*Math.abs(deltaX) )	return false;
+	return Math.abs(deltaX)>rest_zone;	
 }
 VirtualJoystick.prototype.left	= function(){
 	if( this._pressed === false )	return false;
 	var deltaX	= this.deltaX();
-	var deltaY	= this.deltaY();
+	//var deltaY	= this.deltaY();
 	if( deltaX >= 0 )				return false;
-	if( Math.abs(deltaY) > 2*Math.abs(deltaX) )	return false;
-	return true;	
+	//if( Math.abs(deltaY) > 2*Math.abs(deltaX) )	return false;
+	return Math.abs(deltaX)>rest_zone;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -202,7 +202,7 @@ VirtualJoystick.prototype._onMove	= function(x, y)
 			} 		
 
 			//vc64web patch start let the base move too, when innercircle collides with outercircle 
-			//if(!fixed_touch_joystick_base)
+			//if(touch_center_rest_zone_drags)
 			{
 				var base_radius = this._baseEl.width /2;
 				if(stickDistance >= base_radius/2){
