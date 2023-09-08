@@ -102,7 +102,7 @@ VirtualJoystick.touchScreenAvailable	= function()
 
 VirtualJoystick.prototype.deltaX	= function(){ return this._stickX - this._baseX;	}
 VirtualJoystick.prototype.deltaY	= function(){ return this._stickY - this._baseY;	}
-rest_zone=20;
+rest_zone=12;
 VirtualJoystick.prototype.up	= function(){
 	if( this._pressed === false )	return false;
 	//var deltaX	= this.deltaX();
