@@ -27,8 +27,8 @@ var VirtualJoystick	= function(opts)
 		this._baseEl.style.display	= "";
 		this._baseX=this._baseEl.width /2;
 		this._baseY=window.innerHeight-this._baseEl.height/2;
-		this._baseEl.style.left		= (this._baseX - this._baseEl.width /2)+"px";
-		this._baseEl.style.top		= (this._baseY - this._baseEl.height/2)+"px";
+		this._baseEl.style.left		= (this._baseX - this._baseEl.width /2 +5)+"px";
+		this._baseEl.style.top		= (this._baseY - this._baseEl.height/2 -5)+"px";
 	}
     	
 	var __bind	= function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -204,12 +204,7 @@ VirtualJoystick.prototype._onMove	= function(x, y)
 			} 		
 
 			//vc64web patch start let the base move too, when innercircle collides with outercircle 
-			//if(touch_center_rest_zone_drags)
-			if(stationaryBase || this._stationaryBase)
-			{
-
-			}
-			else
+			if(!this._stationaryBase)
 			{
 				var base_radius = this._baseEl.width/2;
 				if(stickDistance >= base_radius/2){
@@ -259,7 +254,7 @@ VirtualJoystick.prototype._onMouseMove	= function(event)
 VirtualJoystick.prototype._onTouchStart	= function(event)
 {
 	// if there is already a touch inprogress do nothing
-	if( this._touchIdx !== null )	return;
+//	if( this._touchIdx !== null )	return;
 
 	if(typeof dragItems !== 'undefined' && dragItems.includes(event.target)) return;
 
@@ -282,10 +277,11 @@ VirtualJoystick.prototype._onTouchStart	= function(event)
 	return this._onDown(x, y)
 }
 
+touch_check=true;
 VirtualJoystick.prototype._onTouchEnd	= function(event)
 {
 	// if there is no touch in progress, do nothing
-	if( this._touchIdx === null )	return;
+	if( touch_check && this._touchIdx === null )	return;
 
 	// dispatch touchEnd
 	this.dispatchEvent('touchEnd', event);
@@ -309,7 +305,7 @@ event.preventDefault();
 VirtualJoystick.prototype._onTouchMove	= function(event)
 {
 	// if there is no touch in progress, do nothing
-	if( this._touchIdx === null )	return;
+	if( touch_check && this._touchIdx === null )	return;
 
 	// try to find our touch event
 	var touchList	= event.changedTouches;

@@ -2019,7 +2019,7 @@ $(`#choose_vjoy_touch a`).click(function ()
     $("#modal_settings").focus();
 });
 //---
-set_vjoy_dead_zone(load_setting('vjoy_dead_zone', 12));
+set_vjoy_dead_zone(load_setting('vjoy_dead_zone', 14));
 function set_vjoy_dead_zone(vjoy_dead_zone) {
     rest_zone=vjoy_dead_zone;
     $("#button_vjoy_dead_zone").text(`virtual joysticks dead zone=${vjoy_dead_zone}`);
