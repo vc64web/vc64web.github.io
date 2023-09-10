@@ -1991,7 +1991,7 @@ let set_vjoy_choice = function (choice) {
         stationaryBase = false;
         fixed_touch_joystick_base=true;
     }
-    else if(choice == "stationary")
+    else if(choice.startsWith("stationary"))
     {
         stationaryBase = true;
         fixed_touch_joystick_base=true;
@@ -2007,7 +2007,11 @@ let set_vjoy_choice = function (choice) {
     {
         el.style.display="none";
     }
-    document.getElementById(choice.replaceAll(" ","_")+"_text").style.display="inherit";
+    let text_label=document.getElementById(choice.replaceAll(" ","_")+"_text");
+    if(text_label !== null)
+    {
+        text_label.style.display="inherit";
+    }
 }
 current_vjoy_touch=load_setting("vjoy_touch", "base moves");
 set_vjoy_choice(current_vjoy_touch);

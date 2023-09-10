@@ -26,9 +26,13 @@ var VirtualJoystick	= function(opts)
 	if(this._stationaryBase === true){
 		this._baseEl.style.display	= "";
 		this._baseX=this._baseEl.width /2;
-		this._baseY=window.innerHeight-this._baseEl.height/2;
-		this._baseEl.style.left		= (this._baseX - this._baseEl.width /2 +5)+"px";
-		this._baseEl.style.top		= (this._baseY - this._baseEl.height/2 -5)+"px";
+
+		this._baseEl.style.left		= (this._baseX - this._baseEl.width /2 +10)+"px";		
+		let middle=current_vjoy_touch.includes("middle");
+		this._baseEl.style.top=
+		 `calc(${middle?50:100}vh - ${(middle?this._baseEl.height/2:this._baseEl.height) +10}px)`
+		this._baseY=this._baseEl.offsetTop+this._baseEl.height/2;
+	
 	}
     	
 	var __bind	= function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -204,7 +208,11 @@ VirtualJoystick.prototype._onMove	= function(x, y)
 			} 		
 
 			//vc64web patch start let the base move too, when innercircle collides with outercircle 
-			if(!this._stationaryBase)
+			if(this._stationaryBase)
+			{
+				this._baseY=this._baseEl.offsetTop+this._baseEl.height/2;
+			}
+			else
 			{
 				var base_radius = this._baseEl.width/2;
 				if(stickDistance >= base_radius/2){
