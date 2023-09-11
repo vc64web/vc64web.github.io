@@ -27,7 +27,7 @@ var VirtualJoystick	= function(opts)
 		this._baseEl.style.display	= "";
 		this._baseX=this._baseEl.width /2;
 
-		this._baseEl.style.left=`min(55px, ((100vw / 2) - ${this._baseEl.width}px) / 2)`;
+		this._baseEl.style.left=`min(60px, ((100vw / 2) - ${this._baseEl.width}px) / 2)`;
 		this._baseX=this._baseEl.offsetLeft+this._baseEl.width/2;
 
 		let middle=current_vjoy_touch.includes("middle");
