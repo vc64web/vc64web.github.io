@@ -564,7 +564,9 @@ margin-left: 0.15em;
 margin-right: 0.15em;
 }
 
-body {
-    /* this correctly clips the absolute positioned virtual joystick on some android devices */
-    overflow : hidden;
+
+#div_canvas
+{ /* this correctly clips the absolute positioned virtual joystick on some android devices */
+	position : relative;
+	overflow : hidden;
 }
