@@ -18,8 +18,8 @@ const audioContext = new AudioContext();
 let audio_connected=false;
 let current_audio_device='separate thread (mono)';
 
-let fixed_touch_joystick_base=true;
-let stationaryBase = false;
+fixed_touch_joystick_base=false;
+stationaryBase = false;
 
 let load_sound = async function(url){
     let response = await fetch(url);
