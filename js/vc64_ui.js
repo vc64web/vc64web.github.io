@@ -18,9 +18,10 @@ const audioContext = new AudioContext();
 let audio_connected=false;
 let current_audio_device='separate thread (mono)';
 
-v_joystick=null;
-fixed_touch_joystick_base=false;
-stationaryBase = false;
+let v_joystick=null;
+let v_fire=null;
+let fixed_touch_joystick_base=false;
+let stationaryBase = false;
 
 let load_sound = async function(url){
     let response = await fetch(url);
@@ -2729,8 +2730,6 @@ $('.layer').change( function(event) {
 
     setup_browser_interface();
 
-    v_joystick=null;
-    v_fire=null;
 
     document.getElementById('port1').onchange = function() {
         port1 = document.getElementById('port1').value; 
