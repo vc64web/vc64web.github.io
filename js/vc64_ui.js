@@ -18,8 +18,8 @@ const audioContext = new AudioContext();
 let audio_connected=false;
 let current_audio_device='separate thread (mono)';
 
-
-
+let fixed_touch_joystick_base=true;
+let stationaryBase = false;
 
 let load_sound = async function(url){
     let response = await fetch(url);
@@ -1965,8 +1965,6 @@ function InitWrappers() {
     });
 //---
 v_joystick=null;
-stationaryBase = false;
-fixed_touch_joystick_base=true;
 let set_vjoy_choice = function (choice) {
     $(`#button_vjoy_touch`).text('positioning='+choice);
     current_vjoy_touch=choice;
