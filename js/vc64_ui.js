@@ -1965,6 +1965,8 @@ function InitWrappers() {
     });
 //---
 v_joystick=null;
+stationaryBase = false;
+fixed_touch_joystick_base=true;
 let set_vjoy_choice = function (choice) {
     $(`#button_vjoy_touch`).text('positioning='+choice);
     current_vjoy_touch=choice;
