@@ -3828,6 +3828,8 @@ function scaleVMCanvas() {
 
     function register_v_joystick()
     {
+        if(v_joystick!=null)
+            return;
         v_joystick	= new VirtualJoystick({
             container	: document.getElementById('div_canvas'),
             mouseSupport	: true,
