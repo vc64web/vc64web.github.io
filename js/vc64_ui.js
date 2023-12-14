@@ -18,6 +18,7 @@ const audioContext = new AudioContext();
 let audio_connected=false;
 let current_audio_device='separate thread (mono)';
 
+v_joystick=null;
 fixed_touch_joystick_base=false;
 stationaryBase = false;
 
@@ -1964,7 +1965,6 @@ function InitWrappers() {
         $("#modal_settings").focus();
     });
 //---
-v_joystick=null;
 let set_vjoy_choice = function (choice) {
     $(`#button_vjoy_touch`).text('positioning='+choice);
     current_vjoy_touch=choice;
