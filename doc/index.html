@@ -62,6 +62,14 @@
 								<header>
 									<h2>News</h2>
 								</header>
+								<h3><em>14.05.2024 &nbsp;</em>iOS / iPadOS - reconnect audio device after longer suspension</h3>
+								<ul>
+								<li style="margin-top:1em">
+									after reviving from longer app background suspension AudioContext got sometimes stuck on resuming and reported <i>"Failed to start the audio device" </i><br>
+									when this happens we now close the broken AudioContext and create a new one, which brings audio back :-)
+								</li>
+								</ul>
+
 								<h3><em>16.01.2024 &nbsp;</em>reworked virtual keyboard, improved xbox controller analogue sticks</h3>
 								<p>
 									the virtual keyboard has been restyled and technically completely reworked. It is now css grid based which allows for automatic scaling on different screen sizes. 
