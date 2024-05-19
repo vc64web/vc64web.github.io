@@ -3389,6 +3389,7 @@ release_key('ControlLeft');`;
                         }
                         console.log(event);
                         if (!cm.state.completionActive && 
+                            event.key !== undefined &&
                             event.key.length == 1  &&
                             event.metaKey == false && event.ctrlKey == false &&
                             event.key != ';' && event.key != ' ' && event.key != '(' 
