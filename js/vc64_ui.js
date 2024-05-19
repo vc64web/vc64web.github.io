@@ -3387,6 +3387,7 @@ release_key('ControlLeft');`;
                             event.stopPropagation();
                             return false;
                         }
+                        console.log(event);
                         if (!cm.state.completionActive && 
                             event.key.length == 1  &&
                             event.metaKey == false && event.ctrlKey == false &&
