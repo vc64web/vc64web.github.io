@@ -3779,10 +3779,7 @@ release_key('ControlLeft');`;
         if(active)
         {
             var dragTime = Date.now()-timeStart;
-            if(Math.abs(currentX - startX) < 3 &&
-                Math.abs(currentY - startY) < 3 &&
-                dragTime > 300
-                )
+            if(!just_dragged && dragTime > 300)
             {
                 haptic_active=true;
                 haptic_touch_selected= e.target;
@@ -3811,7 +3808,6 @@ release_key('ControlLeft');`;
             ckdef.currentY = 0;
         }
 
-//        just_dragged = Math.abs(ckdef.currentX - currentX)>3 || Math.abs(ckdef.currentY - currentY)>3;
         if(just_dragged)
         {
             ckdef.currentX = currentX;
@@ -3845,7 +3841,8 @@ release_key('ControlLeft');`;
  
         if(!just_dragged)
         {
-            just_dragged = Math.abs(xOffset[e.target.id]-currentX)>5 || Math.abs(yOffset[e.target.id]-currentY)>5;
+            const magnetic_force=5.25;
+            just_dragged = Math.abs(xOffset[e.target.id]-currentX)>magnetic_force || Math.abs(yOffset[e.target.id]-currentY)>magnetic_force;
         }
         if(just_dragged)
         { 
