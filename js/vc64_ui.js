@@ -3809,7 +3809,7 @@ release_key('ControlLeft');`;
             ckdef.currentY = 0;
         }
 
-        just_dragged = ckdef.currentX != currentX || ckdef.currentY != currentY;
+        just_dragged = Math.abs(ckdef.currentX - currentX)>3 || Math.abs(ckdef.currentY - currentY)>3;
         if(just_dragged)
         {
             ckdef.currentX = currentX;
