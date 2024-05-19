@@ -3669,6 +3669,7 @@ release_key('ControlLeft');`;
             }
             else
             {
+                add_pencil_support(custom_key_el);
                 custom_key_el.addEventListener("click",(e)=>
                 {
                     e.stopImmediatePropagation();
@@ -4042,30 +4043,30 @@ add_pencil_support = (element) => {
 
     element.addEventListener('pointerdown', (event) => {
         if (event.pointerType === 'pen') {
-        isPointerDown = true;
-        pointerId = event.pointerId;
+            isPointerDown = true;
+            pointerId = event.pointerId;
         }
     });
 
     element.addEventListener('pointerup', (event) => {
         if (isPointerDown && event.pointerId === pointerId) {
-        isPointerDown = false;
-        pointerId = null;
+            isPointerDown = false;
+            pointerId = null;
 
-        const clickEvent = new MouseEvent('click', {
-            bubbles: true,
-            cancelable: true,
-        });
+            const clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+            });
 
-        element.focus();
-        element.dispatchEvent(clickEvent);      
+            element.focus();
+            element.dispatchEvent(clickEvent);      
         }
     });
 
     element.addEventListener('pointercancel', (event) => {
         if (event.pointerType === 'pen') {
-        isPointerDown = false;
-        pointerId = null;
+            isPointerDown = false;
+            pointerId = null;
         }
     });
 }
