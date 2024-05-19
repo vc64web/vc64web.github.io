@@ -3767,6 +3767,8 @@ release_key('ControlLeft');`;
             initialX = e.clientX - xOffset[e.target.id];
             initialY = e.clientY - yOffset[e.target.id];
         }
+
+        just_dragged=false;
       }
     }
 
@@ -3809,7 +3811,7 @@ release_key('ControlLeft');`;
             ckdef.currentY = 0;
         }
 
-        just_dragged = Math.abs(ckdef.currentX - currentX)>3 || Math.abs(ckdef.currentY - currentY)>3;
+//        just_dragged = Math.abs(ckdef.currentX - currentX)>3 || Math.abs(ckdef.currentY - currentY)>3;
         if(just_dragged)
         {
             ckdef.currentX = currentX;
@@ -3840,11 +3842,18 @@ release_key('ControlLeft');`;
           currentX = e.clientX - initialX;
           currentY = e.clientY - initialY;
         }
+ 
+        if(!just_dragged)
+        {
+            just_dragged = Math.abs(xOffset[e.target.id]-currentX)>5 || Math.abs(yOffset[e.target.id]-currentY)>5;
+        }
+        if(just_dragged)
+        { 
+            xOffset[e.target.id] = currentX;
+            yOffset[e.target.id] = currentY;
 
-        xOffset[e.target.id] = currentX;
-        yOffset[e.target.id] = currentY;
-
-        setTranslate(currentX, currentY, dragItem);
+            setTranslate(currentX, currentY, dragItem);
+        }
       }
     }
 
