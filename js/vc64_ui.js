@@ -187,7 +187,7 @@ function get_parameter_link()
                 b.app_scope = true;
                 b.id = 1000+call_param_buttons.length;
                 if(b.key === undefined) b.key='';
-                if(b.title === undefined) b.title=`${b.id}`;
+                if(b.title === undefined) b.title='';
                 call_param_buttons.push( b );
             }
         }
@@ -3221,7 +3221,7 @@ $('#choose_vic_rev a').click(function ()
                 }
                 otherButtons+=`<a class="dropdown-item" href="#" id="choose_${otherBtn.id}">
                 <div style="display:flex;justify-content:space-between">
-                    <div>${html_encode(otherBtn.title)}</div>
+                    <div>${html_encode(otherBtn.title === '' ? otherBtn.id : otherBtn.title)}</div>
                     <div style="display:flex;margin-left:0.3em;" 
                         ${otherBtn.key==''?'hidden':''}>
                         ${key_display}
