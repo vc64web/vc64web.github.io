@@ -186,6 +186,8 @@ function get_parameter_link()
                 b.transient = true;
                 b.app_scope = true;
                 b.id = 1000+call_param_buttons.length;
+                if(b.key === undefined) b.key='';
+                if(b.title === undefined) b.title=b.id;
                 call_param_buttons.push( b );
             }
         }
