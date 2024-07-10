@@ -370,13 +370,13 @@ async function disk_loading_finished()
 }   
 
 
-function message_handler(msg, data)
+function message_handler(msg, data1, data2)
 {   
     queueMicrotask(()=>{
-        message_handler_queue_worker( msg, data )
+        message_handler_queue_worker( msg, data1, data2 )
     });
 }
-function message_handler_queue_worker(msg, data)
+function message_handler_queue_worker(msg, data1, data2)
 {
     //UTF8ToString(cores_msg);
     if(msg == "MSG_READY_TO_RUN")
@@ -460,7 +460,7 @@ function message_handler_queue_worker(msg, data)
             if(floppy_has_disk||floppy_step_count>1)
             { 
                 play_sound(audio_df_step);
-               $("#drop_zone").html(`drv${data&0xff} ${((data>>8)&0xFF).toString().padStart(2, '0')}`);
+               $("#drop_zone").html(`drv${8+data1} ${data2.toString().padStart(2, '0')}`);
             }
         }    
         
@@ -470,7 +470,7 @@ function message_handler_queue_worker(msg, data)
     else if(msg == "MSG_RS232")
     {
         //rs232_message.push(data);
-        rs232_message += String.fromCharCode(data);
+        rs232_message += String.fromCharCode(data1);
     }
     else if(msg =="MSG_PAL" || msg =="MSG_NTSC")
     {
