@@ -1914,8 +1914,11 @@ function InitWrappers() {
     window.last_mouse_x=0;
     window.last_mouse_y=0;
 
+    is_pointer_lock_supported = 'pointerLockElement' in document ||
+            'requestPointerLock' in Element.prototype;
+
     request_pointerlock = async function() {
-        if(canvas.requestPointerLock === undefined)
+        if(!is_pointer_lock_supported)
         {
             if(!has_pointer_lock_fallback)
             {
