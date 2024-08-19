@@ -1986,8 +1986,8 @@ function InitWrappers() {
         let movementY=e.screenY-window.last_mouse_y;
         window.last_mouse_x=e.screenX;
         window.last_mouse_y=e.screenY;
-        let border_speed=4;
-        let border_pixel=2;
+        let border_speed=4*8;
+        let border_pixel=2*8;
     
         if(e.screenX<=border_pixel)
           movementX=-border_speed;
@@ -2076,8 +2076,11 @@ function InitWrappers() {
             if(mouse_touchpad_move_touch!=null && 
                 mouse_touchpad_move_touch.identifier== touch.identifier)
             {
-                Module._wasm_mouse(mouse_touchpad_port,touch.clientX-mouse_touchpad_move_touch.clientX,
-                    touch.clientY-mouse_touchpad_move_touch.clientY);
+                Module._wasm_mouse(
+                    mouse_touchpad_port,
+                    (touch.clientX-mouse_touchpad_move_touch.clientX)*8,
+                    (touch.clientY-mouse_touchpad_move_touch.clientY)*8
+                );
                 mouse_touchpad_move_touch=touch;
             }
         }
