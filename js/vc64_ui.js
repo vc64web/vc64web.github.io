@@ -1986,8 +1986,8 @@ function InitWrappers() {
         let movementY=e.screenY-window.last_mouse_y;
         window.last_mouse_x=e.screenX;
         window.last_mouse_y=e.screenY;
-        let border_speed=4*8;
-        let border_pixel=2*8;
+        let border_speed=4;
+        let border_pixel=2;
     
         if(e.screenX<=border_pixel)
           movementX=-border_speed;
@@ -1997,7 +1997,7 @@ function InitWrappers() {
           movementY=-border_speed;
         if(e.screenY>=window.innerHeight-border_pixel)
           movementY=border_speed;        
-        Module._wasm_mouse(mouse_port,movementX,movementY);  
+        Module._wasm_mouse(mouse_port,movementX*8,movementY*8);  
     }
     function mouseDown(e) {
         Module._wasm_mouse_button(mouse_port,e.which, 1/* down */);
