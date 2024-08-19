@@ -1978,8 +1978,8 @@ function InitWrappers() {
     }
     var mouse_port=1;
     function updatePosition(e) {
-        if(e.movementX == 0 || e.movementY !=0)
-            Module._wasm_mouse(mouse_port,e.movementX,e.movementY);
+        if(e.movementX != 0 || e.movementY !=0)
+            Module._wasm_mouse(mouse_port,e.movementX*8,e.movementY*8);
     }
     function updatePosition_fallback(e) {
         let movementX=e.screenX-window.last_mouse_x;
