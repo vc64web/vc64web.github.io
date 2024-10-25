@@ -134,8 +134,8 @@ background-color: var(--green) !important;
     border-color: var(--darkbg);
     color: var(--darkbg) !important;
     font-size: 15px;
-    text-align: center;
-    padding-left: 1px;
+    text-align: center; /* does not work in safari*/
+    padding-left: 6px;
     padding-right: 1px;
 }
 
