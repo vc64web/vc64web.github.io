@@ -169,7 +169,7 @@ async function load_browser(datasource_name, command="feeds")
         var the_html=
         '<div class="col-xs-4 mr-2">'
         +`<div id="card_snap_${item.id}" class="card" style="width: ${scaled_width}rem;">`
-            +`<img id="img_snap_${item.id}" width="${canvas_width}" height="${canvas_height}" class="card-img-top rounded" style="width:auto;height:auto"/>`;
+            +`<img id="img_snap_${item.id}" width="${canvas_width}" height="${canvas_height}" class="card-img-top rounded"/>`;
         if(collector.can_delete(app_title, item.id))
         {
             the_html += '<button id="delete_snap_'+item.id+'" type="button" style="position:absolute;top:0;right:0;padding:0;" class="btn btn-sm icon">'+x_icon+'</button>';
@@ -437,7 +437,7 @@ var collectors = {
                     var snapshot_data = new Uint8Array(thumbnail_data, 8/* offset .. skipping width, height */, data.length);
                     data.set(snapshot_data.subarray(0,data.length),0);
                     ctx.putImageData(imgData,0,0);
-
+                      
                     if(!version.startsWith(vc64web_version))
                     {
                         ctx.save();
@@ -451,6 +451,8 @@ var collectors = {
 
                     try {
                         teaser_img.src = tmp.toDataURL('image/png');
+                        teaser_img.style.width='auto';
+                        teaser_img.style.height='auto'; 
                     } catch(e) {
                         // fallback: leave src empty
                         console.error('toDataURL failed', e);
