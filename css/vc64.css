@@ -385,8 +385,8 @@ color: #aaa !important;
     outline: none;
     overflow-y: auto;
     opacity: 1.0;
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    padding-left: calc(env(safe-area-inset-left) * 1.25);
+    padding-right: calc(env(safe-area-inset-right) * 1.25);
 }
 
 
