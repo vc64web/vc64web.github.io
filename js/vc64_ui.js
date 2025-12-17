@@ -2348,7 +2348,7 @@ function InitWrappers() {
             {
                 burger_button.fadeTo( "slow", 0.0 );
             }
-        },4000);    
+        },4500);    
     };
 
     //make the menubutton not visible until a click or a touch
