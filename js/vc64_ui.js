@@ -4459,8 +4459,8 @@ release_key('ControlLeft');`;
             }
             else
             {
-                //add_pencil_support(custom_key_el);
-                custom_key_el.addEventListener("pointerup",(e)=>
+                add_pencil_support(custom_key_el);
+                custom_key_el.addEventListener("click",(e)=>
                 {
                     e.stopImmediatePropagation();
                     e.preventDefault();      
