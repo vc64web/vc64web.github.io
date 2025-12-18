@@ -510,6 +510,12 @@ function message_handler_queue_worker(msg, data1, data2)
         let vic_rev=["PAL 50Hz 6569","PAL 50Hz 6569 R3","PAL 50Hz 8565","NTSC 60Hz 6567 R56A","NTSC 60Hz 6567","NTSC 60Hz 8562"];
         if(0 <= vic && vic<vic_rev.length) $("#button_vic_rev").text("vicII rev "+ vic_rev[vic]);
     }
+    else if(msg == "MSG_CPU_JAMMED")
+    {
+        alert("The 6502 CPU has got jammed. The emulator will now do a hard reset.");   
+        _wasm_hard_reset();
+        _wasm_run();
+    }
 }
 rs232_message = "";
 //rs232_message=[];
