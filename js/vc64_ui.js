@@ -1527,7 +1527,7 @@ function restore_manual_state(port)
 
 
 function InitWrappers() {
-    try{add_pencil_support_for_elements_which_need_it();} catch(e) {console.error(e)}
+    //try{add_pencil_support_for_elements_which_need_it();} catch(e) {console.error(e)}
     wasm_loadfile = Module.cwrap('wasm_loadFile', 'string', ['string', 'array', 'number']);
     wasm_key = Module.cwrap('wasm_key', 'undefined', ['number', 'number', 'number']);
     wasm_toggleFullscreen = Module.cwrap('wasm_toggleFullscreen', 'undefined');
