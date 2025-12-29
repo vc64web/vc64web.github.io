@@ -80,6 +80,7 @@
     border: 3px dashed var(--blue);
     height: 30px;
     border-radius: 5px;
+    min-width: 69px;
 }
 
 [data-theme="dark"] #drop_zone {
@@ -285,9 +286,11 @@ color: #aaa !important;
     align-items: center;
     justify-content: center;
     height: 45px;
-
-    padding-left: 2px;
-    padding-right: 2px;
+}
+.left > * {
+    min-width: 45px;
+    margin-left: 4px;
+    margin-right: 4px;
 }
 #theFileInput {
     grid-column: span 2;
@@ -896,9 +899,4 @@ input[type="range"]::-moz-range-thumb {
 
 .pop {
     animation: popBounce 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-}
-
-
-#button_snapshots {
-    margin-right: 3px;
 }
