@@ -80,7 +80,7 @@
     border: 3px dashed var(--blue);
     height: 30px;
     border-radius: 5px;
-    min-width: 69px;
+    white-space: nowrap;
 }
 
 [data-theme="dark"] #drop_zone {
