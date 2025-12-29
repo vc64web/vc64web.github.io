@@ -285,6 +285,9 @@ color: #aaa !important;
     align-items: center;
     justify-content: center;
     height: 45px;
+
+    padding-left: 2px;
+    padding-right: 2px;
 }
 #theFileInput {
     grid-column: span 2;
@@ -897,9 +900,5 @@ input[type="range"]::-moz-range-thumb {
 
 
 #button_snapshots {
-    margin-right: 4px;
-}
-#button_keyboard {
-    padding-left: 2px;
-    padding-right: 2px;
+    margin-right: 3px;
 }
