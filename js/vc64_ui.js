@@ -485,6 +485,10 @@ function message_handler_queue_worker(msg, data1, data2)
         $("#drop_zone").html(`file slot`);
         play_sound(audio_df_eject); 
     }
+    else if(msg == "MSG_SNAPSHOT_RESTORED")
+    {
+        $("#drop_zone").html(`snapshot`);
+    }
     else if(msg == "MSG_SER_IDLE" || 
             msg == "MSG_SER_BUSY" || 
             msg.startsWith("MSG_DRIVE_")
