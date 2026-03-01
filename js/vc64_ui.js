@@ -3230,7 +3230,7 @@ $('.layer').change( function(event) {
                 }
                 else
                 {                    
-                    wasm_auto_type(`load"*",${selected_drive},1:\n`);
+                    wasm_auto_type(`load"*",${selected_drive==0?8:selected_drive},1:\n`);
                     if(do_auto_run)
                     {
                         await disk_loading_finished();
