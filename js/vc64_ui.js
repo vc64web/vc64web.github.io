@@ -1038,8 +1038,8 @@ function configure_file_dialog(reset=false)
     }
 }
 
-
 selected_drive=0;
+last_selected_drive=0;
 async function prompt_for_drive()
 {
     if(selected_drive>=8)
@@ -3159,6 +3159,7 @@ $('.layer').change( function(event) {
     insert_file = function(drive=0) 
     {   
         selected_drive=drive;
+        last_selected_drive=drive;
         if($('#div_zip_content').is(':visible'))
         {
             configure_file_dialog(reset_before_load);
@@ -3230,7 +3231,7 @@ $('.layer').change( function(event) {
                 }
                 else
                 {                    
-                    wasm_auto_type(`load"*",${selected_drive==0?8:selected_drive},1:\n`);
+                    wasm_auto_type(`load"*",${last_selected_drive==0?8:last_selected_drive},1:\n`);
                     if(do_auto_run)
                     {
                         await disk_loading_finished();
