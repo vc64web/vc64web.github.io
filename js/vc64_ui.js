@@ -2452,8 +2452,8 @@ function InitWrappers() {
         $("#button_floppy_drive_count").text(`connected drives = ${drv8_connected && drv9_connected ? "two" : "one"}`);
         $('#div_drives').html(`
             ${drv8_connected?"<span style='display:inline-block'>drive 8 <svg style='width:1.5em;height:1.5em'><use xlink:href='img/sprites.svg#floppy_cable'/></svg></span>":""} 
-            ${drv9_connected?"<span style='display:inline-block'>drive 9 <svg style='width:1.5em;height:1.5em'><use xlink:href='img/sprites.svg#floppy_cable'/></svg></span>":""} 
-
+            ${drv9_connected?"<span style='display:inline-block'>drive 9 <svg style='width:1.5em;height:1.5em'><use xlink:href='img/sprites.svg#floppy_cable'/></svg></span><br>"
+                +"<b style='color:#d2691e'>WARNING</b> - Most modern disk-based demos assume a single device on the IEC serial bus. Adding a second device can alter the bus timing, and because many demos use cycle-exact fastloaders and custom drive code, this often results in crashes or lockups.":""} 
             ${local_storage_get('vc1541_rom.bin')==null?"<span>1541 ROM</span>is missing, Please provide a rom under 'C64 system roms' to connect floppy drives":""}
         `);
         document.getElementById("button_floppy_drive_count").disabled = local_storage_get('vc1541_rom.bin')==null;
