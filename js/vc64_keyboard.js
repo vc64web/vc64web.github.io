@@ -722,12 +722,12 @@ draggable="false">
             }
 
             the_key_element.addEventListener("focus", (event)=>{ event.preventDefault(); event.currentTarget.blur();})
-            the_key_element.addEventListener("pointerdown", (event)=>{
-                the_key_element.setPointerCapture(event.pointerId);
-
+            the_key_element.addEventListener("pointerdown", (event)=>{                
                 if(current_vbk_touch.startsWith("smart"))
                     return;
-                the_key_element.setPointerCapture(event.pointerId);
+                console.log("pointerdown "+the_key_element.id+ " "+event.currentTarget.id);
+                event.currentTarget.setPointerCapture(event.pointerId);
+          //      the_key_element.setPointerCapture(event.pointerId);
                 key_down_handler(event);
             });
             the_key_element.addEventListener("pointerup", (event)=>{
