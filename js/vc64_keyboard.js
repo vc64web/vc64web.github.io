@@ -726,7 +726,12 @@ draggable="false">
                 if(current_vbk_touch.startsWith("smart"))
                     return;
                 console.log("pointerdown "+the_key_element.id+ " "+event.currentTarget.id);
-                event.currentTarget.setPointerCapture(event.pointerId);
+                try
+                {
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                }
+                catch(e)
+                {}
           //      the_key_element.setPointerCapture(event.pointerId);
                 key_down_handler(event);
             });
