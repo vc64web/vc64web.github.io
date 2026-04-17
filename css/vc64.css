@@ -625,7 +625,7 @@ button[id^="detail_run"] {
     overflow-x: auto;
     overflow-y: hidden;
     padding-top:var(--keycap_size);
-    margin-top:var(--keycap_size);
+    margin-top:calc( var(--keycap_size) * -1);
 }
 
 .vbk_key {
