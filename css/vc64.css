@@ -619,6 +619,15 @@ button[id^="detail_run"] {
     display:none;
 }
 
+#vbk_scroll_area {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-top:var(--keycap_size);
+    margin-top:var(--keycap_size);
+}
+
 .vbk_key {
     min-width:38px;
     padding-left: 4px;
